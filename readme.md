@@ -36,17 +36,17 @@ favタグが付いた小説を更新する場合は
 このスクリプトたちの設定ファイルです。環境変数であれこれ設定をします。
 
 | 環境変数 |  説明 |  サンプル  |
- |:--  |:--  |:--  | 
- |   NAROU |  narou.rbのpathを指定します |  NAROU="$HOME/src/github/narou/narou.rb" | 
- |   NAROU_DIR |  narou.rbをinitしたディレクトリを指定します |  NAROU_DIR=$HOME/narou | 
- |   NOTIFY_TYPE |  通知のタイプを指定します。現在はPUSHBULLET・LINE・SLACKの3種どれかを指定します。 |  NOTIFY_TYPE=SLACK | 
- |   PUSHBULLET_TOKEN |  Pushbulletのトークンを指定します。トークンは [https://www.pushbullet.com/#settings/account](https://www.pushbullet.com/#settings/account) から取得できます |  PUSHBULLET_TOKEN="PUSHBULLET TOKEN" | 
- |   LINE_TOKEN |  LINEのトークンを指定します。トークンは [https://notify-bot.line.me/my/](https://notify-bot.line.me/my/) から取得できます |  LINE_TOKEN="LINE TOKEN" | 
- |   SLACK_WEBHOOK |  SlackのIntegrationでIncoming WebHooksを追加して、Webhook URLを指定します。 |  SLACK_WEBHOOK="SLACK Incoming WebHooks Webhook URL" | 
- |   NOCONV_TAG |  変換していない小説に付けるタグを指定します |  NOCONV_TAG="未変換" | 
- |   NOSEND_TAG |  変換済みの小説に付けるタグを指定します |  NOSEND_TAG="未転送" | 
- |   SLACK_CHANNEL |  通知にSlackを利用している場合、投稿するチャンネルを指定します |  SLACK_CHANNEL="#narou" | 
- |   SLACK_ICON |  通知にSlackを利用している場合、アイコンを指定できます |   SLACK_ICON="books"  | 
+|:----------------------  |:----------------  |:---------------------  | 
+|   NAROU |  narou.rbのpathを指定します |  NAROU="$HOME/src/github/narou/narou.rb" | 
+|   NAROU_DIR |  narou.rbをinitしたディレクトリを指定します |  NAROU_DIR=$HOME/narou | 
+|   NOTIFY_TYPE |  通知のタイプを指定します。現在はPUSHBULLET・LINE・SLACKの3種どれかを指定します。 |  NOTIFY_TYPE=SLACK | 
+|   PUSHBULLET_TOKEN |  Pushbulletのトークンを指定します。トークンは [https://www.pushbullet.com/#settings/account](https://www.pushbullet.com/#settings/account) から取得できます |  PUSHBULLET_TOKEN="PUSHBULLET TOKEN" | 
+|   LINE_TOKEN |  LINEのトークンを指定します。トークンは [https://notify-bot.line.me/my/](https://notify-bot.line.me/my/) から取得できます |  LINE_TOKEN="LINE TOKEN" | 
+|   SLACK_WEBHOOK |  SlackのIntegrationでIncoming WebHooksを追加して、Webhook URLを指定します。 |  SLACK_WEBHOOK="SLACK Incoming WebHooks Webhook URL" | 
+|   NOCONV_TAG |  変換していない小説に付けるタグを指定します |  NOCONV_TAG="未変換" | 
+|   NOSEND_TAG |  変換済みの小説に付けるタグを指定します |  NOSEND_TAG="未転送" | 
+|   SLACK_CHANNEL |  通知にSlackを利用している場合、投稿するチャンネルを指定します |  SLACK_CHANNEL="#narou" | 
+|   SLACK_ICON |  通知にSlackを利用している場合、アイコンを指定できます |   SLACK_ICON="books"  | 
 
 
 ### narou_conv_from_log.sh
