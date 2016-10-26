@@ -2,11 +2,12 @@
 # -*- coding:utf-8 -*-
 
 wait_other_script () {
-    while  [ `ps -ef|grep "$NAROU"|grep -v grep|wc -l` -ge 1 ]
-    do
-	echo "waiting"
-	sleep 30
-    done
+#  while  [ `ps -ef|grep "$NAROU"|grep -v grep|wc -l` -ge 1 ]
+#  do
+#    echo "waiting"
+#    sleep 30
+#  done
+echo ""
 }
 
 tag_add_noconv () {
