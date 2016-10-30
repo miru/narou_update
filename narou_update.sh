@@ -14,7 +14,7 @@ wait_other_script
 pushd $NAROU_DIR
 
 # Update
-/usr/local/bin/narou update -n
+$NAROU update -n
 tag_add_noconv ./log/`ls -1t log | head -1`
 
 popd
