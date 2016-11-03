@@ -17,5 +17,8 @@ pushd $NAROU_DIR
 $NAROU update -n
 tag_add_noconv ./log/`ls -1t log | head -1`
 
+$NAROU freeze --on end
+$NAROU freeze --on 404
+
 popd
 # EOF

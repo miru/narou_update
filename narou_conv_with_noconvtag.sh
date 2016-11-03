@@ -13,17 +13,14 @@ wait_other_script
 ### main ###
 pushd $NAROU_DIR
 
-# Check NID
+# Convert
 NAME=`$NAROU list -t $NOCONV_TAG -e | grep -v "タイトル" | awk -F\| '{print $3}'`
 NID=`$NAROU list -t $NOCONV_TAG | cat`
-
-
-# Convert
 $NAROU convert $NID
 
 # edit tag
-$NAROU tag -d $NOCONV_TAG $NID
 $NAROU tag -a $NOSEND_TAG -c yellow $NID
+$NAROU tag -d $NOCONV_TAG $NID
 
 # Send push notification if update
 case "$NOTIFY_TYPE" in

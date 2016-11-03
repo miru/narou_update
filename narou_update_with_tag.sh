@@ -16,11 +16,14 @@ wait_other_script
 ### main ###
 pushd $NAROU_DIR
 
-# Check NID
-NID=`$NAROU list -t $TAG -f nonfrozen | cat`
-
 # Update
+if [ "$USE_UPDATETAG" == "yes" ]; then
+    NID="tag:$TAG"
+else
+    NID=`$NAROU list -t $TAG -f nonfrozen | cat`
+fi
 $NAROU update -n $NID
+
 NAROU_LOG=./log/`ls -1t log | head -1`
 
 # add tag: no convert
@@ -32,6 +35,7 @@ RES_NEW=`egrep "新着" $NAROU_LOG`
 if [ ! "$RES_NEW" = "" ]; then
     send_notification "【小説更新】【$TAG】" "$NAROU_LOG"
 fi
+$NAROU freeze --on 404
 
 popd
 # EOF
