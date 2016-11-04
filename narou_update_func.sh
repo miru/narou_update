@@ -20,7 +20,7 @@ tag_add_noconv () {
 
 send_notification () {
     FLG=NG
-    RES=`egrep "(DL開始|第[0-9]+部分.*\(新着\)|完結したようです|の更新はキャンセルされました)" $2 | perl -pe 's/ID:[0-9]+　(.*) のDL開始/\n\1/g' | perl -pe 's/ID:[0-9]+　(.*) の(DL開始|更新はキャンセルされました)/\n\1/g'`
+    RES=`egrep "(DL開始|第[0-9]+部分.*\(新着\)|完結したようです|の更新はキャンセルされました)" $2 | perl -pe 's/ID:[0-9]+　(.*) のDL開始/\n\1/g' | perl -pe 's/ID:[0-9]+　(.*) のDL開始/\n\1/g'`
     while [ $FLG = "NG" ]
     do
         case "$NOTIFY_TYPE" in
