@@ -15,7 +15,12 @@ pushd $NAROU_DIR
 
 # Convert
 NAME=`$NAROU list -t "$NOCONV_TAG $KINDLE_TAG" -e | grep -v "タイトル" | awk -F\| '{print $3}'`
-NID=`$NAROU list -t $NOCONV_TAG | cat`
+NID=`$NAROU list -t "$NOCONV_TAG $KINDLE_TAG" | cat`
+
+if [ "$NID" == "" ]; then
+    exit 0
+fi
+
 $NAROU convert $NID
 
 # edit tag
