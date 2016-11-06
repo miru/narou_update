@@ -18,10 +18,11 @@ NAME=`cat log/update_log_**.txt | egrep "^ID.*DL開始" | perl -pe 's/(ID:\d+.*)
 NID=`echo $NAME | perl -pe 's/ID:/\n/g' | perl -pe 's/^(\d+).*/\1/g' | sort -n`
 
 # Convert
-$NAROU convert $NID
+/usr/local/bin/narou convert $NID
 
 # Send push notification if update
-send_notification 【変換完了】 "$NAME"
+send_notification "【変換完了】
+" "$NAME"
 
 popd
 # EOF
