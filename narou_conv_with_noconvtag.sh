@@ -30,15 +30,15 @@ $NAROU tag -d "$NOCONV_TAG" $NID
 # Send push notification if update
 case "$NOTIFY_TYPE" in
     "PUSHBULLET")
-    NAME=`echo $NAME | perl -pe 's/^\■'`
+    NAME=`echo "$NAME" | perl -ne 'BEGIN{printf("\n")} printf(":■%s", $_)'`
 	send_notification_pushbullet "【変換完了】" "$NAME"
 	;;
     "LINE")
-    NAME=`echo $NAME | perl -pe 's/^\■'`
+    NAME=`echo "$NAME" | perl -ne 'BEGIN{printf("\n")} printf(":■%s", $_)'`
 	send_notification_line "【変換完了】" "$NAME"
 	;;
     "SLACK")
-    NAME=`echo $NAME | perl -pe 's/^\:book:'`
+    NAME=`echo "$NAME" | perl -ne 'BEGIN{printf("\n")} printf(":book:%s", $_)'`
 	send_notification_slack "【変換完了】" "$NAME"
 	;;
 esac
