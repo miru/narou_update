@@ -13,7 +13,17 @@ wait_other_script
 ### main ###
 pushd $NAROU_DIR
 
-$NAROU d $@
+if [ -f "./download.txt" ]; then
+    mv -f ./download.txt ./download.txt.tmp
+    URLS=`cat ./download.txt.tmp`
+    $NAROU d -n $URLS
+    $NAROU tag -a "NEW" $URLS
+    if [ "$NOTIFY_TYPE" == "SLACK"]; then
+        send_notification ":mega: :inbox_tray: :new:" "$URLS"
+    else
+        send_notification "【小説DL】" "$URLS"
+    fi
+fi
 
 popd
 
