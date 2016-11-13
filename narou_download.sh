@@ -13,15 +13,21 @@ wait_other_script
 ### main ###
 pushd $NAROU_DIR
 
-if [ -f "./download.txt" ]; then
+if [ -f "./download.txt" -a -s "./download.txt" ]; then
     mv -f ./download.txt ./download.txt.tmp
+    touch ./download.txt
     URLS=`cat ./download.txt.tmp`
     $NAROU d -n $URLS
     $NAROU tag -a "NEW" $URLS
-    if [ "$NOTIFY_TYPE" == "SLACK"]; then
-        send_notification ":mega: :inbox_tray: :new:" "$URLS"
+
+    G=`echo "$URLS" | perl -ne 'BEGIN{@F=()} {chomp(); push(@F,$_)}; END{print "(" . join("|",@F) . ")"}'`
+
+    if [ "$NOTIFY_TYPE" == "SLACK" ]; then
+        TITLE=`$NAROU list -u -e | egrep -e $G | grep -v タイトル | perl -F'\|' -alne 'print ":id:" . $F[0] . ":inbox_tray:" . $F[2]' | perl -pe 's/\(完結\)/:white_flower:/g'`
+        send_notification ":inbox_tray: :new:【小説DL】" "$TITLE"
     else
-        send_notification "【小説DL】" "$URLS"
+        TITLE=`$NAROU list -u -e | egrep -e $G | grep -v タイトル | perl -F'\|' -alne 'print "ID:" . $F[0] . "■" . $F[2]'`
+        send_notification "【小説DL】" "$TITLE"
     fi
 fi
 

@@ -14,7 +14,7 @@ wait_other_script
 pushd $NAROU_DIR
 
 # Convert
-NAME=`$NAROU list -t "$NOCONV_TAG $KINDLE_TAG" -e | grep -v "タイトル" | awk -F\| '{print $3}'`
+NAME=`$NAROU list -t "$NOCONV_TAG $KINDLE_TAG" -e | grep -v "タイトル" | perl -F'\|' -alne 'print "ID:" . $F[0] . $F[2]'`
 NID=`$NAROU list -t "$NOCONV_TAG $KINDLE_TAG" | cat`
 
 if [ "$NID" == "" ]; then
@@ -25,21 +25,21 @@ $NAROU convert $NID
 
 # edit tag
 $NAROU tag -a "$NOSEND_TAG" -c yellow $NID
-$NAROU tag -d "$NOCONV_TAG" $NID
+$NAROU tag -d "$NOCONV_TAG" tag:$NOCONV_TAG
 
 # Send push notification if update
 case "$NOTIFY_TYPE" in
     "PUSHBULLET")
-    NAME=`echo "$NAME" | perl -ne 'BEGIN{printf("\n")} printf(":■%s", $_)'`
+    NAME=`echo "$NAME" | perl -pe 's/ID: *[\* ]?(\d+) /ID:\1 ■/g'`
 	send_notification_pushbullet "【変換完了】" "$NAME"
 	;;
     "LINE")
-    NAME=`echo "$NAME" | perl -ne 'BEGIN{printf("\n")} printf(":■%s", $_)'`
+    NAME=`echo "$NAME" | perl -pe 's/ID: *[\* ]?(\d+) /ID:\1 ■/g'`
 	send_notification_line "【変換完了】" "$NAME"
 	;;
     "SLACK")
-    NAME=`echo "$NAME" | perl -ne 'BEGIN{printf("\n")} printf(":book:%s", $_)'`
-	send_notification_slack "【変換完了】" "$NAME"
+    NAME=`echo "$NAME" | perl -pe 's/ID: *[\* ]?(\d+) /:id:\1 :repeat:/g' | perl -pe 's/\(完結\)/:white_flower:/g'`
+	send_notification_slack ":mega::repeat:【変換完了】" "$NAME"
 	;;
 esac
 
