@@ -26,7 +26,7 @@ send_notification_for_update () {
         perl -pe 's/^ID:(\d+)　/ID:\1 ■/g' | \
         perl -pe 's/(.*) \(新着\)$/　　【新】 \1/g' | \
         perl -pe 's/( のDL開始|第\d+部分　)//g' `
-        send_notification "$1" "$BODY"
+        send_notification "【更新】TAG:$1" "$BODY"
         ;;
         "LINE")
         BODY=`echo "$RES" | perl -pe 's/\(\d+\/\d+\)//g' | \
@@ -34,17 +34,20 @@ send_notification_for_update () {
         perl -pe 's/^ID:(\d+)　/ID:\1 ■/g' | \
         perl -pe 's/(.*) \(新着\)$/【新】 \1/g' | \
         perl -pe 's/( のDL開始|第\d+部分　)//g' `
-        send_notification "$1" "$BODY"
+        send_notification "【更新】TAG:$1" "$BODY"
         ;;
         "SLACK")
         BODY=`echo "$RES" | perl -pe 's/\(\d+\/\d+\)//g' | \
-        perl -pe 's/^ID:(\d+)　(.*) の更新はキャンセルされました/:id:\1 :broken_heart: \2/g' | \
-        perl -pe 's/^ID:92　/:id::nine::two: :notebook_with_decorative_cover:/g' | \
+        perl -pe 's/^ID:(\d+)　(.*) の更新はキャンセルされました/:id:\1 :broken_heart:\2/g' | \
+        perl -pe 's/本好きの下剋上/:notebook_with_decorative_cover:本好きの下剋上/g' | \
         perl -pe 's/^ID:(\d+)　/:id:\1 :dizzy:/g' | \
         perl -pe 's/( |　)+/ /g' | \
         perl -pe 's/(.*) \(新着\)$/:new: \1/g' | \
         perl -pe 's/\(完結\)/:white_flower:/g' | \
-        perl -pe 's/( のDL開始|第\d+部分 )//g' `
+        perl -pe 's/( のDL開始|第\d+部分 )//g' | \
+        perl -pe 's/(～|～|「|\-|（).*(～|～|」|\-|）)//g' | \
+        perl -pe 's/(^:id:[^(、|、|。)]+)(、|、|。).*(:white_flower:)?/\1\2/g' `
+        #perl -ne 'BEGIN{use encoding utf8; use Encode;} if ($_ =~ /^ID:/) {chomp(); print substr($_, 0, 16) . "\n"} else {print $_}' | \
         #BODY=`echo "$RES" | perl -pe 's/\(\d+\/\d+\)//g' | \
         #perl -pe 's/^ID:(\d+)　(.*) の更新はキャンセルされました/:id:\1 :broken_heart: \2/g' | \
         #perl -pe 's/^ID:(\d+)　/:id:\1 :inbox_tray:/g' | \
@@ -53,7 +56,7 @@ send_notification_for_update () {
         #perl -pe 's/( のDL開始|第\d+部分　)//g' | \
         #perl -ne 'BEGIN{$title=""} {if( $_ =~ /^:id:/) {$title=$_; chomp($title)} else {$sub=$_; chomp($sub); printf("%s %s\n", $title, $sub)} }'
         #` ; echo $BODY
-        send_notification ":inbox_tray::up:$1" "$BODY"
+        send_notification ":bookmark:$1" "$BODY"
     esac
 }
 
@@ -90,8 +93,7 @@ send_notification_line () {
 }
 
 send_notification_slack () {
-    #TITLE="$1\n"
-    TITLE=""
+    TITLE="$1\n"
     BODY="$2"
     curl -X POST --data-urlencode "payload={\"channel\": \"$SLACK_CHANNEL\", \"username\": \"narou.rb\", \"text\": \"$TITLE$BODY\", \"icon_emoji\": \":$SLACK_ICON:\"}" $SLACK_WEBHOOK
 }

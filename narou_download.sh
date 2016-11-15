@@ -23,10 +23,17 @@ if [ -f "./download.txt" -a -s "./download.txt" ]; then
     G=`echo "$URLS" | perl -ne 'BEGIN{@F=()} {chomp(); push(@F,$_)}; END{print "(" . join("|",@F) . ")"}'`
 
     if [ "$NOTIFY_TYPE" == "SLACK" ]; then
-        TITLE=`$NAROU list -u -e | egrep -e $G | grep -v タイトル | perl -F'\|' -alne 'print ":id:" . $F[0] . ":inbox_tray:" . $F[2]' | perl -pe 's/\(完結\)/:white_flower:/g'`
-        send_notification ":inbox_tray: :new:【小説DL】" "$TITLE"
+        TITLE=`$NAROU list -u -e | egrep -e $G | grep -v タイトル | \
+        perl -F'\|' -alne 'print ":id:" . $F[0] . ":inbox_tray:" . $F[2]' | \
+        perl -pe 's/\(完結\)/:white_flower:/g' | \
+        perl -pe 'BEGIN{use encoding utf8;} s/(～|「).*(～|」)//g' | \
+        perl -pe 'BEGIN{use encoding utf8;} s/(^:id:[^(、|。)]+)(、|。).*(:white_flower:)?/\1\2/g' `
+        send_notification ":inbox_tray:小説ダウンロード" "$TITLE"
     else
-        TITLE=`$NAROU list -u -e | egrep -e $G | grep -v タイトル | perl -F'\|' -alne 'print "ID:" . $F[0] . "■" . $F[2]'`
+        TITLE=`$NAROU list -u -e | egrep -e $G | grep -v タイトル | \
+        perl -F'\|' -alne 'print "ID:" . $F[0] . "■" . $F[2]'
+        perl -pe 'BEGIN{use encoding utf8;} s/(～|「).*(～|」)//g' | \
+        perl -pe 'BEGIN{use encoding utf8;} s/(^:id:[^(、|。)]+)(、|。).*(\(完結\)?/\1\2/g' `
         send_notification "【小説DL】" "$TITLE"
     fi
 fi

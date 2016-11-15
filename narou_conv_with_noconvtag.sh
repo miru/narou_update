@@ -38,8 +38,11 @@ case "$NOTIFY_TYPE" in
 	send_notification_line "【変換完了】" "$NAME"
 	;;
     "SLACK")
-    NAME=`echo "$NAME" | perl -pe 's/ID: *[\* ]?(\d+) /:id:\1 :repeat:/g' | perl -pe 's/\(完結\)/:white_flower:/g'`
-	send_notification_slack ":mega::repeat:【変換完了】" "$NAME"
+    NAME=`echo "$NAME" | perl -pe 's/ID: *[\* ]?(\d+) /:id:\1 :repeat:/g' | \
+    perl -pe 's/\(完結\)/:white_flower:/g' | \
+    perl -pe 'BEGIN{use encoding utf8;} s/(～|「).*(～|」)//g' | \
+    perl -pe 'BEGIN{use encoding utf8;} s/(^:id:[^(、|。)]+)(、|。).*(:white_flower:)?/\1\2/g' `
+	send_notification_slack ":mega:小説変換" "$NAME"
 	;;
 esac
 
