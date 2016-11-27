@@ -14,8 +14,12 @@ wait_other_script
 pushd $NAROU_DIR
 
 # Update
-$NAROU update -f -n
+#$NAROU update -f -n
+$NAROU update -f -n -gl
 tag_add_noconv ./log/`ls -1t log | head -1`
+
+$NAROU freeze --on tag:end
+$NAROU freeze --on tag:404
 
 popd
 # EOF

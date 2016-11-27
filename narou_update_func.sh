@@ -13,7 +13,7 @@ wait_other_script () {
 tag_add_noconv () {
     UPD_ID=`egrep "DL開始" $1 | perl -pe 's/ID:(\d+).*/\1/g'`
     if [ ! "$UPD_ID" = "" ]; then
-        $NAROU tag -a $NOCONV_TAG -c red $UPD_ID
+        $NAROU tag -a "$NOCONV_TAG" -c red $UPD_ID
     fi
 }
 
@@ -39,23 +39,15 @@ send_notification_for_update () {
         "SLACK")
         BODY=`echo "$RES" | perl -pe 's/\(\d+\/\d+\)//g' | \
         perl -pe 's/^ID:(\d+)　(.*) の更新はキャンセルされました/:id:\1 :broken_heart:\2/g' | \
-        perl -pe 's/本好きの下剋上/:notebook_with_decorative_cover:本好きの下剋上/g' | \
+        perl -pe 's/本好きの下剋上/:notebook_with_decorative_cover:本好きの下剋上:notebook_with_decorative_cover:/g' | \
         perl -pe 's/^ID:(\d+)　/:id:\1 :dizzy:/g' | \
         perl -pe 's/( |　)+/ /g' | \
         perl -pe 's/(.*) \(新着\)$/:new: \1/g' | \
-        perl -pe 's/\(完結\)/:white_flower:/g' | \
         perl -pe 's/( のDL開始|第\d+部分 )//g' | \
-        perl -pe 's/(～|～|「|\-|（).*(～|～|」|\-|）)//g' | \
-        perl -pe 's/(^:id:[^(、|、|。)]+)(、|、|。).*(:white_flower:)?/\1\2/g' `
-        #perl -ne 'BEGIN{use encoding utf8; use Encode;} if ($_ =~ /^ID:/) {chomp(); print substr($_, 0, 16) . "\n"} else {print $_}' | \
-        #BODY=`echo "$RES" | perl -pe 's/\(\d+\/\d+\)//g' | \
-        #perl -pe 's/^ID:(\d+)　(.*) の更新はキャンセルされました/:id:\1 :broken_heart: \2/g' | \
-        #perl -pe 's/^ID:(\d+)　/:id:\1 :inbox_tray:/g' | \
-        #perl -pe 's/(.*) \(新着\)$/:new: \1/g' | \
-        #perl -pe 's/\(完結\)/:white_flower:/g' | \
-        #perl -pe 's/( のDL開始|第\d+部分　)//g' | \
-        #perl -ne 'BEGIN{$title=""} {if( $_ =~ /^:id:/) {$title=$_; chomp($title)} else {$sub=$_; chomp($sub); printf("%s %s\n", $title, $sub)} }'
-        #` ; echo $BODY
+        perl -pe 'BEGIN{use utf8;use Encode;} s/(^:id:[^(、|。)]+)(、|。).*\(完結\)/\1... :white_flower:/g' | \
+        perl -pe 'BEGIN{use utf8;use Encode;} s/\(完結\)/\...:white_flower:/g' | \
+        perl -pe 'BEGIN{use utf8;use Encode;} s/(^:id:[^(、|。)]+)(、|。).*/\1.../g' | \
+        perl -pe 'BEGIN{use utf8;use Encode;} s/(^:id:[^(～|ー|「|\-|（)].*)(～|ー|「|\-|（).*(～|ー|」|\-|）)/\1.../g' `
         send_notification ":bookmark:$1" "$BODY"
     esac
 }
@@ -95,7 +87,7 @@ send_notification_line () {
 send_notification_slack () {
     TITLE="$1\n"
     BODY="$2"
-    curl -X POST --data-urlencode "payload={\"channel\": \"$SLACK_CHANNEL\", \"username\": \"narou.rb\", \"text\": \"$TITLE$BODY\", \"icon_emoji\": \":$SLACK_ICON:\"}" $SLACK_WEBHOOK
+    /usr/bin/curl -X POST --data-urlencode "payload={\"channel\": \"$SLACK_CHANNEL\", \"username\": \"narou.rb\", \"text\": \"$TITLE$BODY\", \"icon_emoji\": \":$SLACK_ICON:\"}" $SLACK_WEBHOOK
 }
 
 # EOF

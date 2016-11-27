@@ -20,7 +20,7 @@ pushd $NAROU_DIR
 if [ "$USE_UPDATETAG" == "yes" ]; then
     NID="tag:$TAG"
 else
-    NID=`$NAROU list -t $TAG -f nonfrozen | cat`
+    NID=`$NAROU list -t "$TAG" -f nonfrozen | cat`
 fi
 $NAROU update -n $NID
 
@@ -36,7 +36,8 @@ if [ ! "$RES_NEW" = "" ]; then
     send_notification_for_update "$TAG" "$NAROU_LOG"
 fi
 
-$NAROU freeze --on 404
+$NAROU freeze --on tag:end
+$NAROU freeze --on tag:404
 
 popd
 # EOF

@@ -25,7 +25,7 @@ $NAROU convert $NID
 
 # edit tag
 $NAROU tag -a "$NOSEND_TAG" -c yellow $NID
-$NAROU tag -d "$NOCONV_TAG" tag:$NOCONV_TAG
+$NAROU tag -d "$NOCONV_TAG" "tag:$NOCONV_TAG"
 
 # Send push notification if update
 case "$NOTIFY_TYPE" in
@@ -39,9 +39,10 @@ case "$NOTIFY_TYPE" in
 	;;
     "SLACK")
     NAME=`echo "$NAME" | perl -pe 's/ID: *[\* ]?(\d+) /:id:\1 :repeat:/g' | \
-    perl -pe 's/\(完結\)/:white_flower:/g' | \
-    perl -pe 'BEGIN{use encoding utf8;} s/(～|「).*(～|」)//g' | \
-    perl -pe 'BEGIN{use encoding utf8;} s/(^:id:[^(、|。)]+)(、|。).*(:white_flower:)?/\1\2/g' `
+    perl -pe 'BEGIN{use utf8;use Encode;} s/(^:id:[^(、|、|。)]+)(、|、|。).*\(完結\)/\1...:white_flower:/g' | \
+    perl -pe 'BEGIN{use utf8;use Encode;} s/\(完結\)/\...:white_flower:/g' | \
+    perl -pe 'BEGIN{use utf8;use Encode;} s/(^:id:[^(、|、|。)]+)(、|、|。).*/\1.../g' | \
+    perl -pe 'BEGIN{use utf8;use Encode;} s/(^ [^(～|～|ー|「|\-|（)].*)(～|～|ー|「|\-|（).*(～|～|ー|」|\-|）)/\1.../g' `
 	send_notification_slack ":mega:小説変換" "$NAME"
 	;;
 esac
