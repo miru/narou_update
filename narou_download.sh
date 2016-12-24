@@ -14,13 +14,14 @@ wait_other_script
 pushd $NAROU_DIR
 
 if [ -f "./download.txt" -a -s "./download.txt" ]; then
-    mv -f ./download.txt ./download.txt.tmp
+    DT=`date +%Y%m%d_%H%M%S`
+    mv -f ./download.txt $DOWN_HISTORY/download.$DT.txt
     touch ./download.txt
-    URLS=`egrep -v "(^$|^#)" ./download.txt.tmp`
+    URLS=`egrep -v "(^$|^#)" $DOWN_HISTORY/download.$DT.txt`
     $NAROU d -n $URLS
     $NAROU tag -a "NEW" $URLS
 
-    G=`echo "$URLS" | perl -ne 'BEGIN{@F=()} {chomp(); push(@F,$_)}; END{print "(" . join("|",@F) . ")"}'`
+    G=`echo "$URLS" | perl -pe 's/\r//g' | perl -ne 'BEGIN{@F=()} {chomp(); push(@F,$_)}; END{print "(" . join("|",@F) . ")"}'`
 
     if [ "$NOTIFY_TYPE" == "SLACK" ]; then
         TITLE=`$NAROU list -u -e | egrep -e $G | grep -v タイトル | \

@@ -22,7 +22,7 @@ if [ "$USE_UPDATETAG" == "yes" ]; then
 else
     NID=`$NAROU list -t "$TAG" -f nonfrozen | cat`
 fi
-$NAROU update -n $NID
+$NAROU update -n -i $NID
 
 NAROU_LOG=./log/`ls -1t log | head -1`
 
@@ -33,6 +33,7 @@ tag_add_noconv $NAROU_LOG
 RES_NEW=`egrep "新着" $NAROU_LOG`
 
 if [ ! "$RES_NEW" = "" ]; then
+    $NAROU mail hotentry
     send_notification_for_update "$TAG" "$NAROU_LOG"
 fi
 

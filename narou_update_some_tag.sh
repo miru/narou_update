@@ -12,16 +12,16 @@ wait_other_script
 
 pushd $NAROU_DIR
 
-$NAROU s hotentry.auto-mail=false
+#$NAROU s hotentry.auto-mail=false
 
-$NAROU u -n `$NAROU list -t 未読 -f nonfrozen | cat` > $NAROU_LOG
+$NAROU u -n -i `$NAROU list -t 未読 -f nonfrozen | cat` > $NAROU_LOG
 tag_add_noconv ./log/`ls -1t log | head -1`
 
-$NAROU u -n `$NAROU list -t 切 -f nonfrozen | cat` > $NAROU_LOG
+$NAROU u -n -i `$NAROU list -t 切 -f nonfrozen | cat` > $NAROU_LOG
 tag_add_noconv ./log/`ls -1t log | head -1`
 
 
-$NAROU s hotentry.auto-mail=true
+#$NAROU s hotentry.auto-mail=true
 
 $NAROU freeze --on end
 $NAROU freeze --on 404

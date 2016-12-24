@@ -16,6 +16,8 @@ pushd $NAROU_DIR
 # Update
 #$NAROU update -n
 $NAROU update -n -gl
+$NAROU mail hotentry
+
 tag_add_noconv ./log/`ls -1t log | head -1`
 
 $NAROU tag -a $NOCONV_TAG `$NAROU list -t modified | cat`
