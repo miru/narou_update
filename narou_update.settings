@@ -29,7 +29,7 @@ export SLACK_WEBHOOK="<SLACK Incoming WebHooks Webhook URL>"
 
 # no convert tag
 NOCONV_TAG="未変換"
-NOSEND_TAG="未転送
+NOSEND_TAG="未転送"
 KINDLE_TAG="kindle"
 
 

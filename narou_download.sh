@@ -19,7 +19,7 @@ if [ -f "./download.txt" -a -s "./download.txt" ]; then
     touch ./download.txt
     URLS=`egrep -v "(^$|^#)" $DOWN_HISTORY/download.$DT.txt`
     $NAROU d -n $URLS
-    $NAROU tag -a "NEW" $URLS
+    $NAROU tag -a "未読" $URLS
 
     G=`echo "$URLS" | perl -pe 's/\r//g' | perl -ne 'BEGIN{@F=()} {chomp(); push(@F,$_)}; END{print "(" . join("|",@F) . ")"}'`
 
