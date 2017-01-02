@@ -7,7 +7,7 @@ export NAROU="$HOME/src/github/narou/narou.rb"
 
 # use update "tag:" parameter
 # e.g) exec  "narou.rb update tag:tagname"
-export USE_UPDATETAG=yes
+#export USE_UPDATETAG=yes
 
 
 # "narou init" dir

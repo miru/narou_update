@@ -17,6 +17,16 @@ tag_add_noconv () {
     fi
 }
 
+tag_only_narou () {
+    TAG="$1"
+    NUM=`$NAROU list -t "$TAG" -sg "-小説家になろう" -e | egrep -v "(タイトル|^$)" | wc -l`
+    if [ $NUM -eq 0 ]; then
+        echo YES
+    else
+        echo NO
+    fi
+}
+
 send_notification_for_update () {
     RES=`egrep "(DL開始|第[0-9]+部分.*\(新着\)|完結したようです|の更新はキャンセルされました|本好きの下剋上.*のDL開始)" $2`
     case "$NOTIFY_TYPE" in
@@ -38,7 +48,7 @@ send_notification_for_update () {
         ;;
         "SLACK")
         BODY=`echo "$RES" | perl -pe 's/\(\d+\/\d+\)//g' | \
-        perl -pe 's/^ID:(\d+)　(.*) の更新はキャンセルされました/:id:\1 :broken_heart:\2/g' | \
+        perl -pe 's/^ID:(\d+)　(.*) の更新はキャンセルされました/:id:\1 \2 :broken_heart:/g' | \
         perl -pe 's/本好きの下剋上/:notebook_with_decorative_cover:本好きの下剋上:notebook_with_decorative_cover:/g' | \
         perl -pe 's/^ID:(\d+)　/:id:\1 :dizzy:/g' | \
         perl -pe 's/( |　)+/ /g' | \

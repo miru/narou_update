@@ -1,11 +1,14 @@
 #!/bin/bash
 # -*- coding:utf-8 -*-
 
-# Get Settings
-. `dirname $0`/narou_update.settings
-
-# Load function
-. `dirname $0`/narou_update_func.sh
+if [ -f $0 ]; then
+    . `dirname $0`/narou_update.settings
+    . `dirname $0`/narou_update_func.sh
+else
+    SELF=`which $0`
+    . `dirname $SELF`/narou_update.settings
+    . `dirname $SELF`/narou_update_func.sh
+fi
 
 # run check
 wait_other_script
@@ -39,6 +42,7 @@ case "$NOTIFY_TYPE" in
 	;;
     "SLACK")
     NAME=`echo "$NAME" | perl -pe 's/ID: *[\* ]?(\d+) /:id:\1 :repeat:/g' | \
+    perl -pe 'BEGIN{use utf8;use Encode;} s/^:id:\*/:id::snowflake:/g' | \
     perl -pe 'BEGIN{use utf8;use Encode;} s/(^:id:[^(、|、|。)]+)(、|、|。).*\(完結\)/\1...:white_flower:/g' | \
     perl -pe 'BEGIN{use utf8;use Encode;} s/\(完結\)/\...:white_flower:/g' | \
     perl -pe 'BEGIN{use utf8;use Encode;} s/(^:id:[^(、|、|。)]+)(、|、|。).*/\1.../g' | \
