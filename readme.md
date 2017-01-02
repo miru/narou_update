@@ -22,7 +22,7 @@ cronに仕込んでおいて自動更新→通知＋hotentry送信→新着読�
 
 指定したタグがついていても凍結した小説は更新しません。
 
-> narou_update_with_tag タグ名
+> narou_update_with_tag タグ名 タグ名...
 
 favタグが付いた小説を更新する場合は
 
@@ -32,21 +32,25 @@ favタグが付いた小説を更新する場合は
 
 新着や更新があった小説に NOCONV_TAG で指定されたタグを付与します。デフォルトでは ”未変換” というタグが付きます。
 
+"--gl" オプションを使って高速化を狙ってみました。指定したタグが小説家になろうのみの場合はかなり速くなりますし、複数タグ指定をした場合でも1度しか narou update -n --gl を実行しないので若干の高速化になる……はずです。たぶん。
+
+タグ毎にhotentryを出力するようにしているので、hotentryで差分を購読かつタグでまとまっていて欲しいというような読み方をしてますので、こんな仕様です。
+
 ### narou_update.settings
 このスクリプトたちの設定ファイルです。環境変数であれこれ設定をします。
 
 | 環境変数 |  説明 |  サンプル  |
-|:----------------------  |:----------------  |:---------------------  | 
-|   NAROU |  narou.rbのpathを指定します |  NAROU="$HOME/src/github/narou/narou.rb" | 
-|   NAROU_DIR |  narou.rbをinitしたディレクトリを指定します |  NAROU_DIR=$HOME/narou | 
-|   NOTIFY_TYPE |  通知のタイプを指定します。現在はPUSHBULLET・LINE・SLACKの3種どれかを指定します。 |  NOTIFY_TYPE=SLACK | 
-|   PUSHBULLET_TOKEN |  Pushbulletのトークンを指定します。トークンは [https://www.pushbullet.com/#settings/account](https://www.pushbullet.com/#settings/account) から取得できます |  PUSHBULLET_TOKEN="PUSHBULLET TOKEN" | 
-|   LINE_TOKEN |  LINEのトークンを指定します。トークンは [https://notify-bot.line.me/my/](https://notify-bot.line.me/my/) から取得できます |  LINE_TOKEN="LINE TOKEN" | 
-|   SLACK_WEBHOOK |  SlackのIntegrationでIncoming WebHooksを追加して、Webhook URLを指定します。 |  SLACK_WEBHOOK="SLACK Incoming WebHooks Webhook URL" | 
-|   NOCONV_TAG |  変換していない小説に付けるタグを指定します |  NOCONV_TAG="未変換" | 
-|   NOSEND_TAG |  変換済みの小説に付けるタグを指定します |  NOSEND_TAG="未転送" | 
-|   SLACK_CHANNEL |  通知にSlackを利用している場合、投稿するチャンネルを指定します |  SLACK_CHANNEL="#narou" | 
-|   SLACK_ICON |  通知にSlackを利用している場合、アイコンを指定できます |   SLACK_ICON="books"  | 
+|:----------------------  |:----------------  |:---------------------  |
+|   NAROU |  narou.rbのpathを指定します |  NAROU="$HOME/src/github/narou/narou.rb" |
+|   NAROU_DIR |  narou.rbをinitしたディレクトリを指定します |  NAROU_DIR=$HOME/narou |
+|   NOTIFY_TYPE |  通知のタイプを指定します。現在はPUSHBULLET・LINE・SLACKの3種どれかを指定します。 |  NOTIFY_TYPE=SLACK |
+|   PUSHBULLET_TOKEN |  Pushbulletのトークンを指定します。トークンは [https://www.pushbullet.com/#settings/account](https://www.pushbullet.com/#settings/account) から取得できます |  PUSHBULLET_TOKEN="PUSHBULLET TOKEN" |
+|   LINE_TOKEN |  LINEのトークンを指定します。トークンは [https://notify-bot.line.me/my/](https://notify-bot.line.me/my/) から取得できます |  LINE_TOKEN="LINE TOKEN" |
+|   SLACK_WEBHOOK |  SlackのIntegrationでIncoming WebHooksを追加して、Webhook URLを指定します。 |  SLACK_WEBHOOK="SLACK Incoming WebHooks Webhook URL" |
+|   NOCONV_TAG |  変換していない小説に付けるタグを指定します |  NOCONV_TAG="未変換" |
+|   NOSEND_TAG |  変換済みの小説に付けるタグを指定します |  NOSEND_TAG="未転送" |
+|   SLACK_CHANNEL |  通知にSlackを利用している場合、投稿するチャンネルを指定します |  SLACK_CHANNEL="#narou" |
+|   SLACK_ICON |  通知にSlackを利用している場合、アイコンを指定できます |   SLACK_ICON="books"  |
 
 
 ### narou_conv_from_log.sh
@@ -97,13 +101,13 @@ narou_updateのシェルスクリプトで利用する bash 関数を定義し�
 
 2 9,14 * * * /home/miru/bin/narou_conv_with_noconvtag.sh > /dev/null 2>&1
 
-2 21 * * * (/home/miru/bin/narou_update_with_tag.sh 購読中 ; /home/miru/bin/narou_update_with_tag.sh kindle ; /home/miru/bin/narou_conv_with_noconvtag.sh) > /dev/null 2>&1
+2 21 * * * (/home/miru/bin/narou_update_with_tag.sh 購読中 kindle ; /home/miru/bin/narou_conv_with_noconvtag.sh) > /dev/null 2>&1
 
-2 1 * * 1-6 (/home/miru/bin/narou_update_with_tag.sh 購読中 ; /home/miru/bin/narou_update_with_tag.sh kindle ; /home/miru/bin/narou_update.sh ; /home/miru/bin/narou_conv_with_noconvtag.sh) > /dev/null 2>&1
+2 1 * * 1-6 (/home/miru/bin/narou_update_with_tag.sh 購読中 kindle ; /home/miru/bin/narou_update.sh ; /home/miru/bin/narou_conv_with_noconvtag.sh) > /dev/null 2>&1
 
-2 1 * * 0 (/home/miru/bin/narou_update_with_tag.sh 購読中 ; /home/miru/bin/narou_update_with_tag.sh kindle ; /home/miru/bin/narou_update_force.sh ; /home/miru/bin/narou_conv_with_noconvtag.sh) > /dev/null 2>&1
+2 1 * * 0 (/home/miru/bin/narou_update_with_tag.sh 購読中 kindle ; /home/miru/bin/narou_update_force.sh ; /home/miru/bin/narou_conv_with_noconvtag.sh) > /dev/null 2>&1
 
-31 0,14 * * * /usr/bin/find /home/miru/narou/hotentry -name hotentry\* -mtime 7 -exec rm {} \;
+31 0,14 * * * /usr/bin/find /home/miru/narou/hotentry -name hotentry\* -mtime +7 -exec rm {} \;
 ```
 
 通常は、0,7,11,18,19,20,23時02分に ”購読中” タグが付いた小説を更新。
