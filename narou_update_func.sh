@@ -10,6 +10,21 @@ wait_other_script () {
     done
 }
 
+get_narou_update_lock () {
+    while [ -f $LOCKFILE ]
+    do
+        echo "INFO: Get lock for narou_update scripts"
+        sleep 10
+    done
+    touch $LOCKFILE
+    echo "INFO: Getted lock for narou_update scripts."
+}
+
+relese_narou_update_lock () {
+    rm -f $LOCKFILE
+    echo "INFO: Release lock for narou_update scripts."
+}
+
 tag_add_noconv () {
     UPD_ID=`egrep "DL開始" $1 | perl -pe 's/ID:(\d+).*/\1/g'`
     if [ ! "$UPD_ID" = "" ]; then
@@ -28,7 +43,7 @@ tag_only_narou () {
 }
 
 send_notification_for_update () {
-    RES=`egrep "(DL開始|第[0-9]+部分.*\(新着\)|完結したようです|の更新はキャンセルされました|本好きの下剋上.*のDL開始)" $2`
+    RES=`egrep "(DL開始|第[0-9]+部分.*\(新着\)|完結したようです|の更新はキャンセルされました|hotentry_.*.mobi を出力しました|本好きの下剋上.*のDL開始)" $2`
     case "$NOTIFY_TYPE" in
         "PUSHBULLET")
         BODY=`echo "$RES" | perl -pe 's/\(\d+\/\d+\)//g' | \
@@ -54,6 +69,7 @@ send_notification_for_update () {
         perl -pe 's/( |　)+/ /g' | \
         perl -pe 's/(.*) \(新着\)$/:new: \1/g' | \
         perl -pe 's/( のDL開始|第\d+部分 )//g' | \
+        perl -pe 's/(hotentry_.*\.mobi を出力しました)/:red_circle:\1/g' | \
         perl -pe 'BEGIN{use utf8;use Encode;} s/(^:id:[^(、|。)]+)(、|。).*\(完結\)/\1... :white_flower:/g' | \
         perl -pe 'BEGIN{use utf8;use Encode;} s/\(完結\)/\...:white_flower:/g' | \
         perl -pe 'BEGIN{use utf8;use Encode;} s/(^:id:[^(、|。)]+)(、|。).*/\1.../g' | \

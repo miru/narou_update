@@ -13,6 +13,10 @@ export NAROU="$HOME/src/github/narou/narou.rb"
 # "narou init" dir
 export NAROU_DIR=$HOME/narou
 
+# use narou api
+# YES / NO
+export USE_NAROU_API=NO
+
 # NOTIFY_TYPE:
 #  PUSHBULLET: PushBullet
 #  LINE: LINE
@@ -38,6 +42,7 @@ SLACK_CHANNEL="#narou"
 SLACK_ICON="books"
 
 export DOWN_HISTORY="$NAROU_DIR/download_history"
+export LOCKFILE="/tmp/narou_update.lock"
 
 export LANG=ja_JP.UTF-8
 export LANGUAGE=ja_JP
