@@ -34,13 +34,14 @@ tag_add_noconv $NAROU_LOG
 rm -f ./log/update_log_dummy.txt
 
 # Send push notification if update
-RES_NEW=`egrep "新着" $NAROU_LOG`
-if [ ! "$RES_NEW" = "" ]; then
-    send_notification_for_update "【全】" "$NAROU_LOG"
-fi
+#RES_NEW=`egrep "新着" $NAROU_LOG`
+#if [ ! "$RES_NEW" = "" ]; then
+#    send_notification_for_update "【全】" "$NAROU_LOG"
+#fi
 
 $NAROU freeze --on tag:end > /dev/null 2>&1
 $NAROU freeze --on tag:404 > /dev/null 2>&1
+$NAROU list -f ss | narou freeze --on > /dev/null 2>&1
 
 relese_narou_update_lock
 
