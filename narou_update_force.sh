@@ -41,7 +41,8 @@ rm -f ./log/update_log_dummy.txt
 
 $NAROU freeze --on tag:end > /dev/null 2>&1
 $NAROU freeze --on tag:404 > /dev/null 2>&1
-$NAROU list -f ss | narou freeze --on > /dev/null 2>&1
+$NAROU list -f ss | $NAROU freeze --on > /dev/null 2>&1
+$NAROU list -t 切 | $NAROU freeze --on > /dev/null 2>&1
 
 relese_narou_update_lock
 
