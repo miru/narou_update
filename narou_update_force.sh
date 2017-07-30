@@ -34,15 +34,29 @@ tag_add_noconv $NAROU_LOG
 rm -f ./log/update_log_dummy.txt
 
 # Send push notification if update
-#RES_NEW=`egrep "新着" $NAROU_LOG`
-#if [ ! "$RES_NEW" = "" ]; then
-#    send_notification_for_update "【全強制】" "$NAROU_LOG"
-#fi
+SS_ID=`$NAROU list -f ss | perl -pe 's/ /|/g' | perl -pe 's/^(.*)$/(\1)/g' `
+RES=`egrep "は連載を再開したようです" $NAROU_LOG | egrep -v "$SS_ID"`
+if [ ! "$RES" = "" ]; then
+    RESTART_ID=`egrep "は連載を再開したようです" $NAROU_LOG | perl -pe 's/^ID:(\d+).*/\1/g' `
+    $NAROU tag -a "再開" $RESTART_ID
 
-$NAROU freeze --on tag:end > /dev/null 2>&1
-$NAROU freeze --on tag:404 > /dev/null 2>&1
-$NAROU list -f ss | $NAROU freeze --on > /dev/null 2>&1
-$NAROU list -t 切 | $NAROU freeze --on > /dev/null 2>&1
+    case "$NOTIFY_TYPE" in
+        "PUSHBULLET")
+        BODY=`echo "$RES" | perl -pe 's/\(\d+\/\d+\)//g' | \
+        perl -pe 's/(.*) は連載を再開したようです/【再開】\1/g' `
+        send_notification "【再開】" "$BODY"
+        ;;
+        "LINE")
+        BODY=`echo "$RES" | perl -pe 's/\(\d+\/\d+\)//g' | \
+        perl -pe 's/(.*) は連載を再開したようです/【再開】\1/g' `
+        send_notification "【再開】" "$BODY"
+        ;;
+        "SLACK")
+        BODY=`echo "$RES" | perl -pe 's/\(\d+\/\d+\)//g' | \
+        perl -pe 's/(.*) は連載を再開したようです/【再開:revolving_hearts:】\1/g' `
+        send_notification "【全強制】" "$BODY"
+    esac
+fi
 
 relese_narou_update_lock
 

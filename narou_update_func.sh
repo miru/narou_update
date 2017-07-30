@@ -42,12 +42,22 @@ tag_only_narou () {
     fi
 }
 
+freeze_novel () {
+    $NAROU freeze --on tag:end > /dev/null 2>&1
+    $NAROU freeze --on tag:404 > /dev/null 2>&1
+    $NAROU list -f ss | $NAROU freeze --on > /dev/null 2>&1
+    $NAROU list -f ss | $NAROU tag -a "end" > /dev/null 2>&1
+    $NAROU list -t 切 | $NAROU freeze --on > /dev/null 2>&1
+    $NAROU list -t "end" | $NAROU tag -d "購読中 購読中な 購読中他" > /dev/null 2>&1
+}
+
 send_notification_for_update () {
-    RES=`egrep "(DL開始|第[0-9]+部分.*\(新着\)|完結したようです|の更新はキャンセルされました|hotentry_.*.mobi を出力しました|本好きの下剋上.*のDL開始)" $2`
+    RES=`egrep "(DL開始|第[0-9]+部分.*\(新着\)|完結したようです|の更新はキャンセルされました|hotentry_.*.mobi を出力しました|は連載を再開したようです|(本好きの下剋上|ハンネローレ).*のDL開始)" $2`
     case "$NOTIFY_TYPE" in
         "PUSHBULLET")
         BODY=`echo "$RES" | perl -pe 's/\(\d+\/\d+\)//g' | \
         perl -pe 's/の更新はキャンセルされました/更新キャンセル/g' | \
+        perl -pe 's/(.*) は連載を再開したようです/【再開】\1/g' | \
         perl -pe 's/^ID:(\d+)　/ID:\1 ■/g' | \
         perl -pe 's/(.*) \(新着\)$/　　【新】 \1/g' | \
         perl -pe 's/( のDL開始|第\d+部分　)//g' `
@@ -56,6 +66,7 @@ send_notification_for_update () {
         "LINE")
         BODY=`echo "$RES" | perl -pe 's/\(\d+\/\d+\)//g' | \
         perl -pe 's/の更新はキャンセルされました/更新キャンセル/g' | \
+        perl -pe 's/(.*) は連載を再開したようです/【再開】\1/g' | \
         perl -pe 's/^ID:(\d+)　/ID:\1 ■/g' | \
         perl -pe 's/(.*) \(新着\)$/【新】 \1/g' | \
         perl -pe 's/( のDL開始|第\d+部分　)//g' `
@@ -64,6 +75,7 @@ send_notification_for_update () {
         "SLACK")
         BODY=`echo "$RES" | perl -pe 's/\(\d+\/\d+\)//g' | \
         perl -pe 's/^ID:(\d+)　(.*) の更新はキャンセルされました/:id:\1 \2 :broken_heart:/g' | \
+        perl -pe 's/(.*) は連載を再開したようです/【再開:revolving_hearts:】\1/g' | \
         perl -pe 's/本好きの下剋上/:notebook_with_decorative_cover:本好きの下剋上:notebook_with_decorative_cover:/g' | \
         perl -pe 's/^ID:(\d+)　/:id:\1 :dizzy:/g' | \
         perl -pe 's/( |　)+/ /g' | \

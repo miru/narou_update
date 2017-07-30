@@ -44,7 +44,7 @@ if [ -f "./download.txt" -a -s "./download.txt" ]; then
     fi
 fi
 
-$NAROU freeze --on `$NAROU list -t 404 | cat`
+freeze_novel
 
 popd
 

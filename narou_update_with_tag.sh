@@ -64,9 +64,7 @@ do
     shift
 done
 
-$NAROU freeze --on tag:end > /dev/null 2>&1
-$NAROU freeze --on tag:404 > /dev/null 2>&1
-$NAROU list -t "end" | $NAROU tag -d "購読中 購読中な 購読中他" > /dev/null 2>&1
+freeze_novel
 
 relese_narou_update_lock
 

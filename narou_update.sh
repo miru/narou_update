@@ -39,11 +39,7 @@ rm -f ./log/update_log_dummy.txt
 #    send_notification_for_update "【全】" "$NAROU_LOG"
 #fi
 
-$NAROU freeze --on tag:end > /dev/null 2>&1
-$NAROU freeze --on tag:404 > /dev/null 2>&1
-$NAROU list -f ss | $NAROU freeze --on > /dev/null 2>&1
-$NAROU list -t 切 | $NAROU freeze --on > /dev/null 2>&1
-
+freeze_novel
 
 relese_narou_update_lock
 
