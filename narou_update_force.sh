@@ -39,6 +39,8 @@ RES=`egrep "は連載を再開したようです" $NAROU_LOG | egrep -v "$SS_ID"
 if [ ! "$RES" = "" ]; then
     RESTART_ID=`egrep "は連載を再開したようです" $NAROU_LOG | perl -pe 's/^ID:(\d+).*/\1/g' `
     $NAROU tag -a "再開" $RESTART_ID
+    $NAROU list -t 再開 | $NAROU freeze --off > /dev/null 2>&1
+    #$NAROU list -f ss | $NAROU freeze --on > /dev/null 2>&1
 
     case "$NOTIFY_TYPE" in
         "PUSHBULLET")
