@@ -1,7 +1,7 @@
 #!/bin/bash
 
 trap "relese_narou_update_lock" EXIT
-trap "echo 処理を中断します" 1 2 3 15
+trap "echo 処理を中断します ; exit 1" 1 2 3 15
 
 if [ -f $0 ]; then
     . `dirname $0`/narou_update.settings
