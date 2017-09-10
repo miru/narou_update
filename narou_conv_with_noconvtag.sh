@@ -1,6 +1,9 @@
 #!/bin/bash
 # -*- coding:utf-8 -*-
 
+trap "relese_narou_update_lock" EXIT
+trap "echo 処理を中断します" 1 2 3 15
+
 if [ -f $0 ]; then
     . `dirname $0`/narou_update.settings
     . `dirname $0`/narou_update_func.sh
@@ -11,6 +14,7 @@ else
 fi
 
 # run check
+get_narou_update_lock
 wait_other_script
 
 ### main ###

@@ -1,7 +1,8 @@
 #!/bin/bash
 # -*- coding:utf-8 -*-
 
-trap "relese_narou_update_lock; exit" 0
+trap "relese_narou_update_lock" EXIT
+trap "echo 処理を中断します" 1 2 3 15
 
 if [ -f $0 ]; then
     . `dirname $0`/narou_update.settings
@@ -38,9 +39,14 @@ SS_ID=`$NAROU list -f ss | perl -pe 's/ /|/g' | perl -pe 's/^(.*)$/(\1)/g' `
 RES=`egrep "は連載を再開したようです" $NAROU_LOG | egrep -v "$SS_ID"`
 if [ ! "$RES" = "" ]; then
     RESTART_ID=`egrep "は連載を再開したようです" $NAROU_LOG | perl -pe 's/^ID:(\d+).*/\1/g' `
-    $NAROU tag -a "再開" $RESTART_ID
-    $NAROU list -t 再開 | $NAROU freeze --off > /dev/null 2>&1
-    #$NAROU list -f ss | $NAROU freeze --on > /dev/null 2>&1
+    $NAROU tag -a  "再開" $RESTART_ID
+    $NAROU list -t "未読 再開" | $NAROU tag -d "再開" > /dev/null 2>&1
+    $NAROU list -f ss          | $NAROU tag -d "再開" > /dev/null 2>&1
+    $NAROU list -t "再開"      | $NAROU freeze --off  > /dev/null 2>&1
+
+    $NAROU list -f ss    | $NAROU freeze --on > /dev/null 2>&1
+    $NAROU list -t "end" | $NAROU tag -d "購読中 購読中な 購読中他" > /dev/null 2>&1
+    freeze_novel
 
     case "$NOTIFY_TYPE" in
         "PUSHBULLET")
@@ -59,8 +65,6 @@ if [ ! "$RES" = "" ]; then
         send_notification "【全強制】" "$BODY"
     esac
 fi
-
-relese_narou_update_lock
 
 popd
 # EOF
