@@ -4,25 +4,25 @@
 wait_other_script () {
     while  [ `ps -ef|grep "$NAROU"|grep -v grep|wc -l` -ge 1 ]
     do
-        date "+--- %Y/%m/%d %H:%M:%S waiting other process ---"
+        date "%Y/%m/%d %H:%M:%S INFO: Wait other $NAROU process"
         ps -ef | grep $NAROU | grep -v grep
-        sleep 30
+        sleep $(($RANDOM % 10 + 20 ))
     done
 }
 
 get_narou_update_lock () {
     while [ -f $LOCKFILE ]
     do
-        echo "INFO: Get lock for narou_update scripts"
-        sleep 10
+        date "%Y/%m/%d %H:%M:%S INFO: Trying get lock for narou_update scripts"
+        sleep $(($RANDOM % 10 + 5 ))
     done
     touch $LOCKFILE
-    echo "INFO: Getted lock for narou_update scripts."
+    date "%Y/%m/%d %H:%M:%S INFO: Get lock for narou_update scripts."
 }
 
 relese_narou_update_lock () {
     rm -f $LOCKFILE
-    echo "INFO: Release lock for narou_update scripts."
+    date "%Y/%m/%d %H:%M:%S INFO: Release lock for narou_update scripts."
 }
 
 tag_add_noconv () {
