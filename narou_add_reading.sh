@@ -19,7 +19,7 @@ wait_other_script
 ### main ###
 pushd $NAROU_DIR
 
-$NAROU tag -a "購読中" $*
+$NAROU tag -a "購読中" $* >/dev/null
 $NAROU tag -d "変換済み 未読 kindle 未転送" $*
 
 popd

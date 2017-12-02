@@ -27,6 +27,8 @@ if [ -f "./download.txt" -a -s "./download.txt" ]; then
     URLS=`egrep -v "(^$|^#)" $DOWN_HISTORY/download.$DT.txt`
     $NAROU d -n $URLS
     $NAROU tag -a "未読" $URLS
+	$NAROU list -t "未読 既読" | $NAROU tag -d "未読"
+	$NAROU list -t "未読 切"   | $NAROU tag -d "未読"
 
     G=`echo "$URLS" | perl -pe 's/( |\r)//g' | perl -ne 'BEGIN{@F=()} {chomp(); push(@F,$_)}; END{print "(" . join("|",@F) . ")"}'`
 
