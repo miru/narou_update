@@ -22,15 +22,18 @@ pushd $NAROU_DIR
 
 if [ -f "./download.txt" -a -s "./download.txt" ]; then
     DT=`date +%Y%m%d_%H%M%S`
+    YYYYMMDD=`date "+%Y%m%d"`
     mv -f ./download.txt $DOWN_HISTORY/download.$DT.txt
     touch ./download.txt
     URLS=`egrep -v "(^$|^#)" $DOWN_HISTORY/download.$DT.txt`
     $NAROU d -n $URLS
     $NAROU tag -a "未読" $URLS
+    $NAROU tag -a -c white "$YYYYMMDD" $URLS
 	$NAROU list -t "未読 既読" | $NAROU tag -d "未読"
 	$NAROU list -t "未読 切"   | $NAROU tag -d "未読"
 
-    G=`echo "$URLS" | perl -pe 's/( |\r)//g' | perl -ne 'BEGIN{@F=()} {chomp(); push(@F,$_)}; END{print "(" . join("|",@F) . ")"}'`
+    G=`echo "$URLS" | perl -pe 's/(http|https):\/\///g' | perl -pe 's/( |\r)//g' | perl -ne 'BEGIN{@F=()} {chomp(); push(@F,$_)}; END{print "(" . join("|",@F) . ")"}'`
+
 
     if [ "$NOTIFY_TYPE" == "SLACK" ]; then
         TITLE=`$NAROU list -u -e | egrep -e "$G" | egrep -v "タイトル" | \
